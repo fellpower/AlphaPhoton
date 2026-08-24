@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Alpha Photon contributors
+
 #include "SonyRemoteProtocol.h"
 
 namespace SonyRemoteProtocol {
@@ -30,4 +33,3 @@ const char* feedbackName(Feedback feedback) {
 }
 
 }  // namespace SonyRemoteProtocol
-

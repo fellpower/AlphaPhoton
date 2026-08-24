@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Alpha Photon contributors
+
 #pragma once
 #include <Arduino.h>
 #include <BLEAdvertisedDevice.h>

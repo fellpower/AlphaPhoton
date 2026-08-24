@@ -145,6 +145,10 @@ The α6400 uses a Bluetooth toggle sequence: one full click opens the shutter, a
 - [Alpha Fairy](https://github.com/frank26080115/alpha-fairy)
 - [α6400 Bluetooth remote help](https://helpguide.sony.net/ilc/1810/v1/en/contents/TP0002392816.html)
 
+## License and acknowledgements
+
+Alpha Photon is released under the [MIT License](LICENSE). Copyright © 2026 Alpha Photon contributors. See [NOTICE](NOTICE) for acknowledgements and upstream project references, including Alpha Fairy by Frank Zhao.
+
 <p align="right"><a href="#english">Back to language selection</a></p>
 
 ---
@@ -288,5 +292,9 @@ Die α6400 verwendet per Bluetooth eine Toggle-Sequenz: Ein vollständiger Klick
 - [Alpha Fairy](https://github.com/frank26080115/alpha-fairy)
 - [α6400: Bluetooth-Fernbedienung](https://helpguide.sony.net/ilc/1810/v1/de/contents/TP0002407921.html)
 - [α6400: Bulb-Aufnahme](https://helpguide.sony.net/ilc/1810/v1/de/contents/TP0002274964.html)
+
+## Lizenz und Danksagungen
+
+Alpha Photon wird unter der [MIT-Lizenz](LICENSE) veröffentlicht. Copyright © 2026 Alpha Photon contributors. Danksagungen und Hinweise zu den als Referenz verwendeten Projekten – darunter Alpha Fairy von Frank Zhao – stehen in [NOTICE](NOTICE).
 
 <p align="right"><a href="#english">Zur Sprachauswahl</a></p>

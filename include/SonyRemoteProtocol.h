@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Alpha Photon contributors
+
 #pragma once
 
 #include <Arduino.h>
@@ -32,4 +35,3 @@ Feedback parseFeedback(const uint8_t* data, size_t length);
 const char* feedbackName(Feedback feedback);
 
 }  // namespace SonyRemoteProtocol
-

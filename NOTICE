@@ -1,0 +1,14 @@
+Alpha Photon
+Copyright (c) 2026 Alpha Photon contributors
+
+Alpha Photon was informed by and acknowledges the following open-source
+projects used as protocol and implementation references:
+
+- Alpha Fairy, Copyright (c) 2022 Frank Zhao, licensed under the MIT License:
+  https://github.com/frank26080115/alpha-fairy
+- Freemote: https://github.com/coral/freemote
+- alpha-remote: https://github.com/Staacks/alpharemote
+- Furble: https://github.com/gkoh/furble
+
+Their project names and links are provided for attribution and reference only.
+See each upstream project for its applicable license and copyright notices.

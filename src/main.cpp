@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Alpha Photon contributors
+
 #include <Arduino.h>
 #include <M5StickCPlus.h>
 
