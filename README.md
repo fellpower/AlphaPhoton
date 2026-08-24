@@ -42,8 +42,8 @@ Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may us
 | Button | Main screen |
 |---|---|
 | Front button, short press | Video start/stop |
-| Right side button, hold | Autofocus |
-| Left power button, short press | Take photo |
+| Side button B, hold | Autofocus |
+| Power button C, short press | Take photo |
 | Front button, hold 1.2 seconds | Open Tools |
 | Power button, long press | Power off |
 
@@ -187,8 +187,8 @@ Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle 
 | Taste | Hauptansicht |
 |---|---|
 | Große Fronttaste kurz | Video Start/Stopp |
-| Rechte Seitentaste halten | Autofokus |
-| Linke Power-Taste kurz | Foto |
+| Seitentaste B halten | Autofokus |
+| Power-Taste C kurz | Foto |
 | Fronttaste 1,2 Sekunden halten | Tools öffnen |
 | Power-Taste lang | Ausschalten |
 
