@@ -27,6 +27,10 @@ Alpha Photon turns an M5StickC Plus 1.1 into a compact Bluetooth camera remote w
 
 ## Hardware and compatibility
 
+<p align="center"><img src="assets/m5stickc-plus-controls.png" alt="Illustrated M5StickC Plus 1.1 with Alpha Photon button assignments" width="850"></p>
+
+<p align="center"><sub>Original project illustration of the M5StickC Plus 1.1 form factor and controls; appearance may vary. See the <a href="https://docs.m5stack.com/en/core/m5stickc_plus">official hardware documentation</a>.</sub></p>
+
 - M5StickC Plus 1.1 (ESP32-PICO-D4, 4 MB flash)
 - a compatible camera with Bluetooth remote-control mode
 - a USB-C **data** cable
@@ -38,8 +42,8 @@ Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may us
 | Button | Main screen |
 |---|---|
 | Front button, short press | Video start/stop |
-| Top side button, hold | Autofocus |
-| Power button, short press | Take photo |
+| Right side button, hold | Autofocus |
+| Left power button, short press | Take photo |
 | Front button, hold 1.2 seconds | Open Tools |
 | Power button, long press | Power off |
 
@@ -168,6 +172,10 @@ Alpha Photon verwandelt einen M5StickC Plus 1.1 in eine kompakte Bluetooth-Kamer
 
 ## Hardware und Kompatibilität
 
+<p align="center"><img src="assets/m5stickc-plus-controls.png" alt="Illustrierter M5StickC Plus 1.1 mit Alpha-Photon-Tastenbelegung" width="850"></p>
+
+<p align="center"><sub>Eigene Projektillustration der Bauform und Tasten des M5StickC Plus 1.1; das Aussehen kann abweichen. Siehe die <a href="https://docs.m5stack.com/en/core/m5stickc_plus">offizielle Hardware-Dokumentation</a>.</sub></p>
+
 - M5StickC Plus 1.1 (ESP32-PICO-D4, 4 MB Flash)
 - kompatible Kamera mit Bluetooth-Fernbedienungsmodus
 - USB-C-**Datenkabel**
@@ -179,8 +187,8 @@ Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle 
 | Taste | Hauptansicht |
 |---|---|
 | Große Fronttaste kurz | Video Start/Stopp |
-| Obere Seitentaste halten | Autofokus |
-| Power-Taste kurz | Foto |
+| Rechte Seitentaste halten | Autofokus |
+| Linke Power-Taste kurz | Foto |
 | Fronttaste 1,2 Sekunden halten | Tools öffnen |
 | Power-Taste lang | Ausschalten |
 
