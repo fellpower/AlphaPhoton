@@ -45,7 +45,7 @@ Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may us
 | **M5StickC Plus 1.1** | **Primary and hardware-tested** | Small, pocketable remote with physical controls | Small 1.14-inch display and 120 mAh battery |
 | [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Supported and hardware-tested** | Larger 2-inch 320 × 240 touch display and 500 mAh battery | Larger enclosure and touch controls instead of dedicated A/B buttons |
 
-The M5StickC Plus 1.1 remains the recommended first choice: it is compact and its physical buttons work without looking at the screen. CoreS3 is the larger alternative with a modern touch interface, longer runtime and motion-activated display wake. Both targets have been tested with the α6400 and have their own ready-to-flash image in release `v0.2.0`.
+The M5StickC Plus 1.1 remains the recommended first choice: it is compact and its physical buttons work without looking at the screen. CoreS3 is the larger alternative with a modern touch interface, longer runtime and motion-activated display wake. Both targets have been tested with the α6400 and have their own ready-to-flash image in release `v0.2.1`.
 
 <p align="center"><img src="assets/cores3-ui.svg" alt="Alpha Photon main touch interface on M5Stack CoreS3" width="640"></p>
 
@@ -105,8 +105,8 @@ Avoid `Reset Network Settings` during a normal controller change. Sony recommend
 
 Download the image for **your** controller and its matching checksum from the [latest release](https://github.com/fellpower/AlphaPhoton/releases/latest):
 
-- `alpha-photon-m5stickc-plus-1.1-v0.2.0.bin` — M5StickC Plus 1.1
-- `alpha-photon-m5stack-cores3-v0.2.0.bin` — M5Stack CoreS3
+- `alpha-photon-m5stickc-plus-1.1-v0.2.1.bin` — M5StickC Plus 1.1
+- `alpha-photon-m5stack-cores3-v0.2.1.bin` — M5Stack CoreS3
 - matching `.sha256` file — optional integrity check
 
 > [!WARNING]
@@ -139,13 +139,13 @@ Close PlatformIO, serial monitors, M5Burner or other programs using that port.
 Windows example:
 
 ```powershell
-python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
+python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.1.bin
 ```
 
 macOS/Linux example:
 
 ```bash
-python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
+python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.1.bin
 ```
 
 #### M5Stack CoreS3
@@ -153,13 +153,13 @@ python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x
 Windows example:
 
 ```powershell
-python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.0.bin
+python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.1.bin
 ```
 
 macOS/Linux example (replace the port if necessary):
 
 ```bash
-python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.0.bin
+python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.1.bin
 ```
 
 Both release files are complete bootable images and must be written at offset `0x0`.
@@ -266,7 +266,7 @@ Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle 
 | **M5StickC Plus 1.1** | **Primäres und hardwaregetestetes Ziel** | Kleine, handliche Fernbedienung mit echten Tasten | Kleines 1,14-Zoll-Display und 120-mAh-Akku |
 | [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Unterstützt und hardwaregetestet** | Größeres 2-Zoll-Touchdisplay mit 320 × 240 Pixeln und 500-mAh-Akku | Größeres Gehäuse und Touchbedienung statt eigener A-/B-Tasten |
 
-Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt und seine echten Tasten lassen sich ohne Blick auf das Display bedienen. Der CoreS3 ist die größere Alternative mit moderner Touchoberfläche, längerer Laufzeit und bewegungsaktivierter Displayaufhellung. Beide Ziele wurden mit der α6400 getestet und besitzen im Release `v0.2.0` jeweils ein eigenes, direkt flashbares Image.
+Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt und seine echten Tasten lassen sich ohne Blick auf das Display bedienen. Der CoreS3 ist die größere Alternative mit moderner Touchoberfläche, längerer Laufzeit und bewegungsaktivierter Displayaufhellung. Beide Ziele wurden mit der α6400 getestet und besitzen im Release `v0.2.1` jeweils ein eigenes, direkt flashbares Image.
 
 <p align="center"><img src="assets/cores3-ui.svg" alt="Alpha-Photon-Touchoberfläche auf dem M5Stack CoreS3" width="640"></p>
 
@@ -324,8 +324,8 @@ Die Dokumentation der α6400 sagt nicht eindeutig, ob mehrere Fernbedienungsbind
 
 Das Image für den **eigenen** Controller und die zugehörige Prüfsumme von der [neuesten Release-Seite](https://github.com/fellpower/AlphaPhoton/releases/latest) herunterladen:
 
-- `alpha-photon-m5stickc-plus-1.1-v0.2.0.bin` — M5StickC Plus 1.1
-- `alpha-photon-m5stack-cores3-v0.2.0.bin` — M5Stack CoreS3
+- `alpha-photon-m5stickc-plus-1.1-v0.2.1.bin` — M5StickC Plus 1.1
+- `alpha-photon-m5stack-cores3-v0.2.1.bin` — M5Stack CoreS3
 - passende `.sha256`-Datei — optionale Integritätsprüfung
 
 > [!WARNING]
@@ -358,13 +358,13 @@ PlatformIO, serielle Monitore, M5Burner und andere Programme schließen, die den
 Windows:
 
 ```powershell
-python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
+python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.1.bin
 ```
 
 macOS/Linux:
 
 ```bash
-python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
+python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.1.bin
 ```
 
 #### M5Stack CoreS3
@@ -372,13 +372,13 @@ python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x
 Windows:
 
 ```powershell
-python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.0.bin
+python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.1.bin
 ```
 
 macOS/Linux (Port bei Bedarf ersetzen):
 
 ```bash
-python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.0.bin
+python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.1.bin
 ```
 
 Beide Release-Dateien sind vollständige, bootfähige Images und müssen an Offset `0x0` geschrieben werden.
