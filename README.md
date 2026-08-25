@@ -37,6 +37,15 @@ Alpha Photon turns an M5StickC Plus 1.1 into a compact Bluetooth camera remote w
 
 Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may use the same protocol but are not considered supported until tested on hardware.
 
+### Choosing the controller
+
+| Device | Status | Best for | Trade-off |
+|---|---|---|---|
+| **M5StickC Plus 1.1** | **Primary and hardware-tested** | Small, pocketable remote with physical controls | Small 1.14-inch display and 120 mAh battery |
+| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | Planned port; not yet supported | Larger 2-inch 320 × 240 touch display and 500 mAh battery | Larger enclosure and touch controls instead of dedicated A/B buttons |
+
+The M5StickC Plus 1.1 remains the recommended first choice: it is compact, its physical buttons work without looking at the screen, and the current release has been tested on real hardware. CoreS3 is intended as an alternative for users who value a larger interface and longer battery runtime. It will receive a separate firmware image after the port has been implemented and hardware-tested.
+
 ## Controls
 
 | Button | Main screen |
@@ -61,6 +70,19 @@ On an α6400:
 4. Power on Alpha Photon and confirm the camera's pairing dialog.
 
 The bond is stored on the ESP32. Later starts reconnect automatically.
+
+### Switching between controllers
+
+Each controller has its own Bluetooth identity and stores its own bond. A CoreS3 therefore cannot reuse the M5StickC's bond. Only power on the controller you want to use; the camera accepts only one active Bluetooth remote connection.
+
+Sony's α6400 documentation does not state whether multiple remote bonds are retained. Pairing a second controller may replace the first one. When switching devices:
+
+1. power off the controller that is currently connected;
+2. power on the controller you want to use and wait for automatic reconnection;
+3. if it does not connect, open the camera's pairing screen and pair it again;
+4. confirm the Bluetooth dialog on the camera.
+
+Avoid `Reset Network Settings` during a normal controller change. Sony recommends it only for troubleshooting, and it removes pairing/network information. See [Sony's official α6400 Bluetooth remote instructions](https://helpguide.sony.net/ilc/1810/v1/de/contents/TP0002407921.html).
 
 ## Install a release (no source build)
 
@@ -143,7 +165,7 @@ The α6400 uses a Bluetooth toggle sequence: one full click opens the shutter, a
 - [α-Remote](https://github.com/Staacks/alpharemote)
 - [Furble](https://github.com/gkoh/furble)
 - [Alpha Fairy](https://github.com/frank26080115/alpha-fairy)
-- [α6400 Bluetooth remote help](https://helpguide.sony.net/ilc/1810/v1/en/contents/TP0002392816.html)
+- [α6400 Bluetooth remote help](https://helpguide.sony.net/ilc/1810/v1/de/contents/TP0002407921.html)
 
 ## License and acknowledgements
 
@@ -186,6 +208,15 @@ Alpha Photon verwandelt einen M5StickC Plus 1.1 in eine kompakte Bluetooth-Kamer
 
 Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle gelten erst nach einem Hardwaretest als unterstützt.
 
+### Wahl des Controllers
+
+| Gerät | Status | Besonders geeignet für | Einschränkung |
+|---|---|---|---|
+| **M5StickC Plus 1.1** | **Primäres und hardwaregetestetes Ziel** | Kleine, handliche Fernbedienung mit echten Tasten | Kleines 1,14-Zoll-Display und 120-mAh-Akku |
+| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | Portierung geplant; noch nicht unterstützt | Größeres 2-Zoll-Touchdisplay mit 320 × 240 Pixeln und 500-mAh-Akku | Größeres Gehäuse und Touchbedienung statt eigener A-/B-Tasten |
+
+Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt, seine echten Tasten lassen sich ohne Blick auf das Display bedienen und die aktuelle Version wurde auf realer Hardware getestet. Der CoreS3 ist als Alternative für ein größeres Bedienfeld und längere Akkulaufzeit vorgesehen. Er erhält nach Portierung und Hardwaretest ein eigenes Firmware-Image.
+
 ## Bedienung
 
 | Taste | Hauptansicht |
@@ -208,6 +239,19 @@ Verfügbare Modi: `INTERVAL` (unbegrenzt), `TIMELAPSE` (Intervall + Anzahl) und 
 4. Alpha Photon einschalten und den Kopplungsdialog bestätigen.
 
 Die Bindung bleibt im ESP32 gespeichert; spätere Starts verbinden automatisch.
+
+### Zwischen Controllern wechseln
+
+Jeder Controller besitzt eine eigene Bluetooth-Identität und speichert seine eigene Bindung. Ein CoreS3 kann die Bindung des M5StickC daher nicht übernehmen. Nur den Controller einschalten, der verwendet werden soll; die Kamera erlaubt nur eine aktive Bluetooth-Fernbedienungsverbindung.
+
+Die Dokumentation der α6400 sagt nicht eindeutig, ob mehrere Fernbedienungsbindungen gespeichert bleiben. Das Koppeln eines zweiten Controllers kann deshalb die erste Bindung ersetzen. Beim Wechsel:
+
+1. den aktuell verbundenen Controller ausschalten;
+2. den gewünschten Controller einschalten und die automatische Verbindung abwarten;
+3. falls keine Verbindung entsteht, an der Kamera den Kopplungsbildschirm öffnen und erneut koppeln;
+4. den Bluetooth-Dialog der Kamera bestätigen.
+
+`Netzw.einst. zurücks.` nicht für einen normalen Controllerwechsel verwenden. Sony empfiehlt die Funktion nur zur Fehlerbehebung; dabei gehen Kopplungs- und Netzwerkinformationen verloren. Siehe [Sonys Anleitung zur Bluetooth-Fernbedienung](https://helpguide.sony.net/ilc/1810/v1/de/contents/TP0002407921.html).
 
 ## Release installieren (ohne Quellcode-Build)
 
