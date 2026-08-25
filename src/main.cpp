@@ -2,12 +2,20 @@
 // Copyright (c) 2026 Alpha Photon contributors
 
 #include <Arduino.h>
+#ifdef ALPHA_PHOTON_CORES3
+#include <M5Unified.h>
+#else
 #include <M5StickCPlus.h>
+#endif
 
 #include "SonyBleRemote.h"
 
 SonyBleRemote remote;
+#ifdef ALPHA_PHOTON_CORES3
+M5Canvas screen(&M5.Display);
+#else
 TFT_eSprite screen(&M5.Lcd);
+#endif
 ConnectionState uiState = ConnectionState::Starting;
 String uiDetail = "boot";
 SonyRemoteProtocol::Feedback uiFeedback = SonyRemoteProtocol::Feedback::Unknown;
@@ -24,6 +32,14 @@ enum class FocusState : uint8_t { Idle, Searching, Locked, Lost };
 FocusState focusState = FocusState::Idle;
 
 void markActivity();
+
+void setDisplayBrightness(uint8_t brightness) {
+#ifdef ALPHA_PHOTON_CORES3
+  M5.Display.setBrightness(brightness);
+#else
+  M5.Axp.ScreenBreath(brightness);
+#endif
+}
 
 enum class UiMode : uint8_t { Remote, Menu, Setup, Running };
 UiMode uiMode = UiMode::Remote;
@@ -122,7 +138,7 @@ void runSequence() {
 void markActivity() {
   lastActivityAt = millis();
   if (displayDimmed) {
-    M5.Axp.ScreenBreath(80);
+    setDisplayBrightness(80);
     displayDimmed = false;
     displayDirty = true;
   }
@@ -195,13 +211,230 @@ const char* focusName() {
 }
 
 uint8_t batteryPercent() {
+#ifdef ALPHA_PHOTON_CORES3
+  const int32_t level = M5.Power.getBatteryLevel();
+  return static_cast<uint8_t>(level < 0 ? 0 : (level > 100 ? 100 : level));
+#else
   const float voltage = M5.Axp.GetBatVoltage();
   if (voltage <= 3.30f) return 0;
   if (voltage >= 4.15f) return 100;
   return static_cast<uint8_t>((voltage - 3.30f) * 100.0f / 0.85f + 0.5f);
+#endif
 }
 
+#ifdef ALPHA_PHOTON_CORES3
+constexpr uint16_t kCoreBackground = 0x0842;  // deep navy
+constexpr uint16_t kCoreHeader = 0x10A4;
+constexpr uint16_t kCorePanel = 0x18E6;
+constexpr uint16_t kCorePanelActive = 0x2148;
+constexpr uint16_t kCoreMuted = 0x9CF3;
+
+void drawCoreButton(int x, int y, int w, int h, uint16_t color, const char* title,
+                    const char* subtitle = nullptr) {
+  screen.fillRoundRect(x, y, w, h, 12, kCorePanel);
+  screen.fillRoundRect(x + 10, y + h - 5, w - 20, 3, 2, color);
+  screen.setTextColor(TFT_WHITE, kCorePanel);
+  screen.setTextSize(2);
+  screen.setCursor(x + 14, y + 13);
+  screen.print(title);
+  if (subtitle) {
+    screen.setTextColor(kCoreMuted, kCorePanel);
+    screen.setTextSize(1);
+    screen.setCursor(x + 14, y + h - 19);
+    screen.print(subtitle);
+  }
+}
+
+void drawStatusCoreS3() {
+  displayDirty = false;
+  screen.fillSprite(kCoreBackground);
+
+  const bool ready = uiState == ConnectionState::Ready;
+  const uint8_t battery = batteryPercent();
+  screen.fillRect(0, 0, 320, 32, kCoreHeader);
+  screen.setTextColor(TFT_CYAN, kCoreHeader);
+  screen.setTextSize(1);
+  screen.setCursor(10, 11);
+  screen.print("ALPHA PHOTON");
+  screen.fillCircle(106, 15, 5, ready ? TFT_GREEN : TFT_ORANGE);
+  screen.setTextColor(TFT_WHITE, kCoreHeader);
+  screen.setTextSize(1);
+  screen.setCursor(116, 11);
+  screen.print(ready ? "CAM READY" : stateName(uiState));
+  screen.setCursor(263, 11);
+  screen.printf("%u%%", battery);
+  screen.drawRoundRect(240, 9, 18, 11, 2, TFT_WHITE);
+  screen.fillRect(258, 12, 2, 5, TFT_WHITE);
+  screen.fillRect(243, 12, (battery * 12) / 100, 5, battery <= 15 ? TFT_RED : TFT_GREEN);
+
+  if (uiMode == UiMode::Remote) {
+    const uint16_t recColor = recording ? TFT_RED : (ready ? TFT_GREEN : TFT_ORANGE);
+    const uint16_t videoBackground = recording ? 0x6000 : kCorePanelActive;
+    screen.fillRoundRect(8, 39, 160, 114, 16, videoBackground);
+    screen.setTextColor(kCoreMuted, videoBackground);
+    screen.setTextSize(1);
+    screen.setCursor(20, 51);
+    screen.print(recording ? "RECORDING" : "VIDEO CONTROL");
+    screen.drawCircle(56, 97, 25, recColor);
+    screen.drawCircle(56, 97, 24, recColor);
+    screen.fillCircle(56, 97, recording ? 12 : 9, recording ? TFT_RED : recColor);
+    screen.setTextColor(TFT_WHITE, videoBackground);
+    screen.setTextSize(2);
+    screen.setCursor(94, 72);
+    screen.print(recording ? "STOP" : "START");
+    if (recording) {
+      const uint32_t seconds = (millis() - recordingStartedAt) / 1000;
+      screen.setTextColor(TFT_WHITE, videoBackground);
+      screen.setTextSize(1);
+      screen.setCursor(94, 104);
+      screen.printf("%02lu:%02lu:%02lu", (unsigned long)(seconds / 3600),
+                    (unsigned long)((seconds / 60) % 60),
+                    (unsigned long)(seconds % 60));
+    } else {
+      screen.setTextColor(kCoreMuted, videoBackground);
+      screen.setTextSize(1);
+      screen.setCursor(94, 104);
+      screen.printf("%lu CLIPS", (unsigned long)clipCount);
+    }
+    screen.setTextColor(kCoreMuted, videoBackground);
+    screen.setTextSize(1);
+    screen.setCursor(20, 134);
+    screen.print("TAP TO TOGGLE");
+
+    screen.fillRoundRect(176, 39, 136, 54, 14, 0x03CC);
+    screen.drawRect(190, 56, 22, 15, TFT_WHITE);
+    screen.fillRect(196, 53, 9, 3, TFT_WHITE);
+    screen.drawCircle(201, 63, 4, TFT_WHITE);
+    screen.setTextColor(TFT_WHITE, 0x03CC);
+    screen.setTextSize(2);
+    screen.setCursor(222, 49);
+    screen.print("PHOTO");
+    screen.setTextSize(1);
+    screen.setCursor(223, 73);
+    screen.printf("%lu  PHOTO MODE", (unsigned long)photoCount);
+
+    screen.fillRoundRect(176, 101, 136, 52, 14, kCorePanel);
+    screen.setTextColor(TFT_WHITE, kCorePanel);
+    screen.setTextSize(2);
+    screen.setCursor(190, 111);
+    screen.print("TOOLS");
+    screen.setTextColor(TFT_CYAN, kCorePanel);
+    screen.setCursor(282, 111);
+    screen.print(">");
+    screen.setTextColor(kCoreMuted, kCorePanel);
+    screen.setTextSize(1);
+    screen.setCursor(190, 136);
+    screen.print("SEQUENCES");
+
+    const uint16_t afColor = focusState == FocusState::Locked ? TFT_GREEN :
+                             (focusState == FocusState::Lost ? TFT_RED : TFT_CYAN);
+    screen.fillRoundRect(8, 161, 304, 70, 15, kCorePanel);
+    screen.fillRoundRect(18, 226, 284, 3, 2, afColor);
+    screen.setTextColor(TFT_WHITE, kCorePanel);
+    screen.setTextSize(3);
+    screen.setCursor(21, 177);
+    screen.print("AF");
+    screen.setTextColor(afColor, kCorePanel);
+    screen.setTextSize(2);
+    screen.setCursor(82, 179);
+    screen.print(focusName());
+    screen.setTextColor(kCoreMuted, kCorePanel);
+    screen.setTextSize(1);
+    screen.setCursor(82, 205);
+    screen.print("PRESS + HOLD TO FOCUS");
+    screen.drawCircle(276, 194, 20, afColor);
+    screen.drawFastHLine(262, 194, 28, afColor);
+    screen.drawFastVLine(276, 180, 28, afColor);
+  } else if (uiMode == UiMode::Menu) {
+    for (uint8_t i = 0; i < 3; ++i) {
+      const int y = 37 + i * 51;
+      const uint16_t color = i == selectedTool ? TFT_CYAN : TFT_DARKGREY;
+      screen.fillRoundRect(8, y, 304, 47, 10,
+                           i == selectedTool ? kCorePanelActive : kCorePanel);
+      screen.drawRoundRect(8, y, 304, 47, 10, color);
+      screen.fillRoundRect(13, y + 8, 4, 31, 2, color);
+      screen.setTextColor(TFT_WHITE, i == selectedTool ? kCorePanelActive : kCorePanel);
+      screen.setTextSize(2);
+      screen.setCursor(26, y + 14);
+      screen.print(kToolNames[i]);
+      screen.setTextColor(kCoreMuted, i == selectedTool ? kCorePanelActive : kCorePanel);
+      screen.setTextSize(1);
+      screen.setCursor(252, y + 19);
+      screen.print("SET  >");
+    }
+    drawCoreButton(8, 192, 304, 39, TFT_LIGHTGREY, "BACK");
+  } else if (uiMode == UiMode::Setup) {
+    screen.setTextColor(TFT_CYAN, kCoreBackground);
+    screen.setTextSize(2);
+    screen.setCursor(10, 42);
+    screen.print(kToolNames[selectedTool]);
+    const uint8_t fields = selectedTool == 0 ? 1 : (selectedTool == 1 ? 2 : 3);
+    const char* labels[] = {"INTERVAL", "PHOTOS", "PAUSE"};
+    for (uint8_t i = 0; i < fields; ++i) {
+      const int w = fields == 1 ? 304 : (fields == 2 ? 148 : 97);
+      const int x = 8 + i * (w + (fields == 2 ? 8 : 5));
+      screen.fillRoundRect(x, 75, w, 100, 10,
+                           i == setupField ? kCorePanelActive : kCorePanel);
+      screen.drawRoundRect(x, 75, w, 100, 10, i == setupField ? TFT_CYAN : TFT_DARKGREY);
+      const char* label = labels[i];
+      uint16_t value = 0;
+      const char* suffix = "";
+      if (selectedTool == 0) { label = "INTERVAL"; value = kIntervals[intervalIndex]; suffix = " s"; }
+      else if (selectedTool == 1) {
+        label = i == 0 ? "INTERVAL" : "PHOTOS";
+        value = i == 0 ? kIntervals[intervalIndex] : kCounts[countIndex];
+        suffix = i == 0 ? " s" : "";
+      } else {
+        const char* astroLabels[] = {"EXPOSURE", "PAUSE", "PHOTOS"};
+        label = astroLabels[i];
+        value = i == 0 ? kExposures[exposureIndex] :
+                (i == 1 ? kPauses[pauseIndex] : kCounts[countIndex]);
+        suffix = i < 2 ? " s" : "";
+      }
+      const uint16_t fieldBackground = i == setupField ? kCorePanelActive : kCorePanel;
+      screen.setTextColor(kCoreMuted, fieldBackground);
+      screen.setTextSize(1);
+      screen.setCursor(x + 10, 91);
+      screen.print(label);
+      screen.setTextColor(TFT_WHITE, fieldBackground);
+      screen.setTextSize(3);
+      screen.setCursor(x + 12, 122);
+      screen.printf("%u%s", value, suffix);
+    }
+    drawCoreButton(8, 190, 92, 41, TFT_LIGHTGREY, "BACK");
+    drawCoreButton(108, 190, 96, 41, TFT_CYAN, "CHANGE");
+    drawCoreButton(212, 190, 100, 41, TFT_GREEN,
+                   setupField + 1 >= fields ? "START" : "NEXT");
+  } else {
+    const uint32_t remaining = nextActionAt > millis() ?
+                               (nextActionAt - millis() + 999) / 1000 : 0;
+    const uint16_t color = bulbActive ? TFT_RED : TFT_GREEN;
+    screen.fillRoundRect(8, 42, 304, 138, 14, kCorePanel);
+    screen.drawRoundRect(8, 42, 304, 138, 14, color);
+    screen.setTextColor(color, kCorePanel);
+    screen.setTextSize(3);
+    screen.setCursor(14, 55);
+    screen.print(bulbActive ? "EXPOSING" : (nrWaiting ? "PROCESSING" : "NEXT PHOTO"));
+    screen.setTextColor(TFT_WHITE, kCorePanel);
+    screen.setTextSize(5);
+    screen.setCursor(120, 105);
+    screen.printf("%lu", (unsigned long)remaining);
+    screen.setTextSize(2);
+    screen.setCursor(15, 153);
+    if (sequenceTarget) screen.printf("%lu / %lu", (unsigned long)sequenceDone,
+                                      (unsigned long)sequenceTarget);
+    else screen.printf("%lu / --", (unsigned long)sequenceDone);
+    drawCoreButton(8, 190, 304, 41, TFT_RED, "STOP");
+  }
+  screen.pushSprite(0, 0);
+}
+#endif
+
 void drawStatus() {
+#ifdef ALPHA_PHOTON_CORES3
+  drawStatusCoreS3();
+  return;
+#endif
   displayDirty = false;
   screen.fillSprite(TFT_BLACK);
 
@@ -403,16 +636,150 @@ void handleSerial() {
   }
 }
 
+#ifdef ALPHA_PHOTON_CORES3
+enum class TouchAction : uint8_t { None, Video, Photo, Focus, Tools, Back, Change, Next, Tool0, Tool1, Tool2, Stop };
+TouchAction touchAction = TouchAction::None;
+
+void wakeDisplayOnMotion() {
+  static bool initialized = false;
+  static float previousX = 0.0f;
+  static float previousY = 0.0f;
+  static float previousZ = 0.0f;
+
+  if (!M5.Imu.update()) return;
+  const auto data = M5.Imu.getImuData();
+  if (initialized && displayDimmed) {
+    const float accelerationDelta = fabsf(data.accel.x - previousX) +
+                                    fabsf(data.accel.y - previousY) +
+                                    fabsf(data.accel.z - previousZ);
+    const float rotation = fabsf(data.gyro.x) + fabsf(data.gyro.y) + fabsf(data.gyro.z);
+    if (accelerationDelta > 0.12f || rotation > 18.0f) {
+      Serial.printf("[UI] motion wake accel=%.2f gyro=%.1f\n", accelerationDelta, rotation);
+      markActivity();
+    }
+  }
+  previousX = data.accel.x;
+  previousY = data.accel.y;
+  previousZ = data.accel.z;
+  initialized = true;
+}
+
+void changeSetupValue() {
+  if (selectedTool < 2 && setupField == 0) intervalIndex = (intervalIndex + 1) % 6;
+  else if (selectedTool == 1 || (selectedTool == 2 && setupField == 2)) countIndex = (countIndex + 1) % 5;
+  else if (selectedTool == 2 && setupField == 0) exposureIndex = (exposureIndex + 1) % 8;
+  else if (selectedTool == 2 && setupField == 1) pauseIndex = (pauseIndex + 1) % 6;
+}
+
+void handleCoreTouch() {
+  const auto touch = M5.Touch.getDetail();
+  if (touch.wasPressed()) {
+    markActivity();
+    if (uiMode == UiMode::Remote) {
+      if (touch.y >= 39 && touch.y < 156) {
+        if (touch.x < 172) touchAction = TouchAction::Video;
+        else touchAction = touch.y < 97 ? TouchAction::Photo : TouchAction::Tools;
+      } else if (touch.y >= 158) {
+        touchAction = TouchAction::Focus;
+        focusHeld = remote.focusDown();
+        focusState = FocusState::Searching;
+        uiDetail = "AF held";
+        displayDirty = true;
+      }
+    } else if (uiMode == UiMode::Menu) {
+      if (touch.y >= 190) touchAction = TouchAction::Back;
+      else if (touch.y >= 34) {
+        const uint8_t tool = min<uint8_t>(2, (touch.y - 34) / 52);
+        touchAction = static_cast<TouchAction>(static_cast<uint8_t>(TouchAction::Tool0) + tool);
+      }
+    } else if (uiMode == UiMode::Setup) {
+      if (touch.y >= 190) {
+        touchAction = touch.x < 104 ? TouchAction::Back :
+                      (touch.x < 208 ? TouchAction::Change : TouchAction::Next);
+      } else if (touch.y >= 75 && touch.y <= 180) {
+        const uint8_t fields = selectedTool == 0 ? 1 : (selectedTool == 1 ? 2 : 3);
+        setupField = min<uint8_t>(fields - 1, (touch.x * fields) / 320);
+        touchAction = TouchAction::Change;
+        displayDirty = true;
+      }
+    } else if (uiMode == UiMode::Running) {
+      touchAction = TouchAction::Stop;
+    }
+  }
+
+  if (!touch.wasReleased()) return;
+  markActivity();
+  switch (touchAction) {
+    case TouchAction::Video:
+      remote.toggleRecord();
+      uiDetail = "record toggle";
+      break;
+    case TouchAction::Photo:
+      if (remote.takePhoto()) ++photoCount;
+      uiDetail = "photo";
+      break;
+    case TouchAction::Focus:
+      if (focusHeld) remote.releaseAll();
+      focusHeld = false;
+      focusState = FocusState::Idle;
+      uiDetail = "AF released";
+      break;
+    case TouchAction::Tools:
+      uiMode = UiMode::Menu;
+      break;
+    case TouchAction::Back:
+      uiMode = uiMode == UiMode::Setup ? UiMode::Menu : UiMode::Remote;
+      break;
+    case TouchAction::Change:
+      changeSetupValue();
+      break;
+    case TouchAction::Next: {
+      const uint8_t lastField = selectedTool == 0 ? 0 : (selectedTool == 1 ? 1 : 2);
+      if (setupField >= lastField) startSequence();
+      else ++setupField;
+      break;
+    }
+    case TouchAction::Tool0:
+    case TouchAction::Tool1:
+    case TouchAction::Tool2:
+      selectedTool = static_cast<uint8_t>(touchAction) - static_cast<uint8_t>(TouchAction::Tool0);
+      setupField = 0;
+      uiMode = UiMode::Setup;
+      break;
+    case TouchAction::Stop:
+      stopSequence();
+      break;
+    default:
+      break;
+  }
+  touchAction = TouchAction::None;
+  displayDirty = true;
+}
+#endif
+
 void setup() {
   Serial.begin(115200);
   delay(300);
+#ifdef ALPHA_PHOTON_CORES3
+  auto cfg = M5.config();
+  cfg.clear_display = true;
+  cfg.output_power = true;
+  M5.begin(cfg);
+  M5.Display.setRotation(1);
+  M5.Display.setTextWrap(false);
+  screen.setColorDepth(16);
+  screen.createSprite(M5.Display.width(), M5.Display.height());
+  screen.setTextWrap(false);
+  setDisplayBrightness(100);
+#else
   M5.begin(true, true, true);
   M5.Lcd.setRotation(2);
   M5.Lcd.setTextWrap(false);
   screen.setColorDepth(16);
   screen.createSprite(M5.Lcd.width(), M5.Lcd.height());
   screen.setTextWrap(false);
-  M5.Axp.ScreenBreath(80);
+  setDisplayBrightness(80);
+#endif
   lastActivityAt = millis();
   Serial.println("\nAlpha Photon firmware");
   printHelp();
@@ -422,10 +789,16 @@ void setup() {
 
 void loop() {
   M5.update();
+#ifdef ALPHA_PHOTON_CORES3
+  wakeDisplayOnMotion();
+#endif
   remote.loop();
   handleSerial();
   runSequence();
 
+#ifdef ALPHA_PHOTON_CORES3
+  handleCoreTouch();
+#else
   const bool powerPressed = M5.Axp.GetBtnPress() == 0x02;
   if (uiMode == UiMode::Remote && !chordActive && M5.BtnA.pressedFor(1200)) {
     if (focusHeld) remote.releaseAll();
@@ -517,6 +890,7 @@ void loop() {
   } else if (uiMode == UiMode::Running) {
     if (M5.BtnA.wasReleased() || powerPressed) stopSequence();
   }
+#endif
 
   static uint32_t lastRefresh = 0;
   const uint32_t refreshInterval = (recording || uiMode == UiMode::Running) ? 250 : 1000;
@@ -526,7 +900,7 @@ void loop() {
   }
 
   if (!recording && uiMode != UiMode::Running && !displayDimmed && millis() - lastActivityAt >= 20000) {
-    M5.Axp.ScreenBreath(25);
+    setDisplayBrightness(25);
     displayDimmed = true;
   }
   delay(5);

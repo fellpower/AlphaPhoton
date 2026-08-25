@@ -42,9 +42,13 @@ Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may us
 | Device | Status | Best for | Trade-off |
 |---|---|---|---|
 | **M5StickC Plus 1.1** | **Primary and hardware-tested** | Small, pocketable remote with physical controls | Small 1.14-inch display and 120 mAh battery |
-| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | Planned port; not yet supported | Larger 2-inch 320 × 240 touch display and 500 mAh battery | Larger enclosure and touch controls instead of dedicated A/B buttons |
+| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Supported and hardware-tested** | Larger 2-inch 320 × 240 touch display and 500 mAh battery | Larger enclosure and touch controls instead of dedicated A/B buttons |
 
-The M5StickC Plus 1.1 remains the recommended first choice: it is compact, its physical buttons work without looking at the screen, and the current release has been tested on real hardware. CoreS3 is intended as an alternative for users who value a larger interface and longer battery runtime. It will receive a separate firmware image after the port has been implemented and hardware-tested.
+The M5StickC Plus 1.1 remains the recommended first choice: it is compact and its physical buttons work without looking at the screen. CoreS3 is the larger alternative with a modern touch interface, longer runtime and motion-activated display wake. Both targets have been tested with the α6400; the current downloadable `v0.1.0` release image is still for the M5StickC Plus 1.1 only.
+
+<p align="center"><img src="assets/cores3-ui.svg" alt="Alpha Photon main touch interface on M5Stack CoreS3" width="640"></p>
+
+<p align="center"><sub>CoreS3 main screen: video, photo, tools, press-and-hold autofocus, camera connection and battery status.</sub></p>
 
 ## Controls
 
@@ -59,6 +63,18 @@ The M5StickC Plus 1.1 remains the recommended first choice: it is compact, its p
 In Tools: the side button changes the selection/value, the front button confirms/starts, and Power goes back. Press the front button to stop a running sequence.
 
 Available tools: `INTERVAL` (unlimited), `TIMELAPSE` (interval + count) and `ASTRO BULB` (exposure + pause + count).
+
+### CoreS3 touch controls
+
+| Touch area | Action |
+|---|---|
+| Video control | Start/stop recording |
+| Photo | Trigger shutter; camera must be in a photo mode |
+| AF, press and hold | Hold autofocus; release to stop focusing |
+| Tools | Open interval, timelapse and Astro BULB |
+| Lift or move the device | Restore display brightness after dimming |
+
+The camera decides how the shutter command is interpreted. In Movie/S&amp;Q mode, or with `Movie w/ Shutter` enabled, tapping Photo may start video instead of taking a still image. Switch the camera to `M`, `A`, `S`, `P` or another still-photo mode for photos.
 
 ## Pair the camera
 
@@ -145,11 +161,22 @@ Flashing replaces the installed firmware. BLE pairing data may need to be recrea
 Install [PlatformIO](https://platformio.org/) and run:
 
 ```powershell
-pio run
+pio run -e m5stickc-plus-11
 pio device list
-pio run --target upload --upload-port COM4
+pio run -e m5stickc-plus-11 --target upload --upload-port COM4
 pio device monitor --port COM4 --baud 115200 --filter time
 ```
+
+CoreS3:
+
+```powershell
+pio run -e m5stack-cores3
+pio device list
+pio run -e m5stack-cores3 --target upload --upload-port COM13
+pio device monitor --port COM13 --baud 115200 --filter time
+```
+
+Port names vary. If the CoreS3 does not enter download mode automatically, hold its bottom `RST` button for about three seconds until the green LED lights, then release it and use the newly appearing serial port.
 
 ## Astro/BULB
 
@@ -213,9 +240,13 @@ Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle 
 | Gerät | Status | Besonders geeignet für | Einschränkung |
 |---|---|---|---|
 | **M5StickC Plus 1.1** | **Primäres und hardwaregetestetes Ziel** | Kleine, handliche Fernbedienung mit echten Tasten | Kleines 1,14-Zoll-Display und 120-mAh-Akku |
-| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | Portierung geplant; noch nicht unterstützt | Größeres 2-Zoll-Touchdisplay mit 320 × 240 Pixeln und 500-mAh-Akku | Größeres Gehäuse und Touchbedienung statt eigener A-/B-Tasten |
+| [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Unterstützt und hardwaregetestet** | Größeres 2-Zoll-Touchdisplay mit 320 × 240 Pixeln und 500-mAh-Akku | Größeres Gehäuse und Touchbedienung statt eigener A-/B-Tasten |
 
-Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt, seine echten Tasten lassen sich ohne Blick auf das Display bedienen und die aktuelle Version wurde auf realer Hardware getestet. Der CoreS3 ist als Alternative für ein größeres Bedienfeld und längere Akkulaufzeit vorgesehen. Er erhält nach Portierung und Hardwaretest ein eigenes Firmware-Image.
+Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt und seine echten Tasten lassen sich ohne Blick auf das Display bedienen. Der CoreS3 ist die größere Alternative mit moderner Touchoberfläche, längerer Laufzeit und bewegungsaktivierter Displayaufhellung. Beide Ziele wurden mit der α6400 getestet; das aktuell herunterladbare `v0.1.0`-Release-Image ist weiterhin nur für den M5StickC Plus 1.1 bestimmt.
+
+<p align="center"><img src="assets/cores3-ui.svg" alt="Alpha-Photon-Touchoberfläche auf dem M5Stack CoreS3" width="640"></p>
+
+<p align="center"><sub>CoreS3-Hauptansicht: Video, Foto, Tools, Autofokus durch Gedrückthalten sowie Kamera- und Akkustatus.</sub></p>
 
 ## Bedienung
 
@@ -230,6 +261,18 @@ Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt, seine ec
 In Tools ändert die Seitentaste Auswahl/Wert, die Fronttaste bestätigt/startet und Power geht zurück. Während einer Sequenz stoppt die Fronttaste.
 
 Verfügbare Modi: `INTERVAL` (unbegrenzt), `TIMELAPSE` (Intervall + Anzahl) und `ASTRO BULB` (Belichtung + Pause + Anzahl).
+
+### CoreS3-Touchbedienung
+
+| Touchfläche | Aktion |
+|---|---|
+| Video | Aufnahme starten/stoppen |
+| Photo | Auslöser; die Kamera muss in einem Fotomodus stehen |
+| AF gedrückt halten | Autofokus halten; zum Beenden loslassen |
+| Tools | Intervall, Timelapse und Astro-BULB öffnen |
+| Gerät anheben oder bewegen | Display nach dem Dimmen wieder aufhellen |
+
+Die Kamera entscheidet, wie sie den Auslösebefehl interpretiert. Im Film-/S&amp;Q-Modus oder bei aktiviertem `Film mit Verschluss` kann Photo eine Videoaufnahme statt eines Standbilds starten. Für Fotos die Kamera auf `M`, `A`, `S`, `P` oder einen anderen Fotomodus stellen.
 
 ## Kamera koppeln
 
@@ -314,11 +357,22 @@ Das Flashen ersetzt die installierte Firmware. Wenn der Flash zuvor separat gel�
 [PlatformIO](https://platformio.org/) installieren und ausführen:
 
 ```powershell
-pio run
+pio run -e m5stickc-plus-11
 pio device list
-pio run --target upload --upload-port COM4
+pio run -e m5stickc-plus-11 --target upload --upload-port COM4
 pio device monitor --port COM4 --baud 115200 --filter time
 ```
+
+CoreS3:
+
+```powershell
+pio run -e m5stack-cores3
+pio device list
+pio run -e m5stack-cores3 --target upload --upload-port COM13
+pio device monitor --port COM13 --baud 115200 --filter time
+```
+
+Portnamen können abweichen. Falls der CoreS3 nicht automatisch in den Downloadmodus wechselt, die untere `RST`-Taste ungefähr drei Sekunden halten, bis die grüne LED leuchtet. Anschließend loslassen und den neu erschienenen seriellen Port verwenden.
 
 ## Astro/BULB
 

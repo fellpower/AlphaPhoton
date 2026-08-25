@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 320 240" role="img" aria-labelledby="title description">
+  <title id="title">Alpha Photon CoreS3 touch interface</title>
+  <desc id="description">Main remote screen with video, photo, tools, autofocus, camera connection and battery status.</desc>
+  <rect width="320" height="240" rx="12" fill="#08101f"/>
+  <rect width="320" height="32" rx="12" fill="#111827"/>
+  <rect y="20" width="320" height="12" fill="#111827"/>
+  <text x="10" y="19" fill="#18d8f2" font-family="Arial,sans-serif" font-size="9" font-weight="700">ALPHA PHOTON</text>
+  <circle cx="106" cy="15" r="5" fill="#30d158"/>
+  <text x="116" y="19" fill="#f7fafc" font-family="Arial,sans-serif" font-size="8">CAM READY</text>
+  <rect x="240" y="9" width="18" height="11" rx="2" fill="none" stroke="#f7fafc"/>
+  <rect x="258" y="12" width="2" height="5" fill="#f7fafc"/>
+  <rect x="243" y="12" width="12" height="5" fill="#30d158"/>
+  <text x="263" y="19" fill="#f7fafc" font-family="Arial,sans-serif" font-size="8">100%</text>
+
+  <rect x="8" y="39" width="160" height="114" rx="16" fill="#202c46"/>
+  <text x="20" y="59" fill="#aab6cc" font-family="Arial,sans-serif" font-size="8">VIDEO CONTROL</text>
+  <circle cx="56" cy="97" r="25" fill="none" stroke="#30d158" stroke-width="2"/>
+  <circle cx="56" cy="97" r="9" fill="#30d158"/>
+  <text x="94" y="87" fill="#ffffff" font-family="Arial,sans-serif" font-size="16" font-weight="700">START</text>
+  <text x="94" y="110" fill="#aab6cc" font-family="Arial,sans-serif" font-size="8">0 CLIPS</text>
+  <text x="20" y="143" fill="#aab6cc" font-family="Arial,sans-serif" font-size="8">TAP TO TOGGLE</text>
+
+  <rect x="176" y="39" width="136" height="54" rx="14" fill="#087ea4"/>
+  <rect x="190" y="56" width="22" height="15" fill="none" stroke="#fff"/>
+  <rect x="196" y="53" width="9" height="3" fill="#fff"/>
+  <circle cx="201" cy="63" r="4" fill="none" stroke="#fff"/>
+  <text x="222" y="64" fill="#fff" font-family="Arial,sans-serif" font-size="14" font-weight="700">PHOTO</text>
+  <text x="223" y="82" fill="#fff" font-family="Arial,sans-serif" font-size="7">0 · PHOTO MODE</text>
+
+  <rect x="176" y="101" width="136" height="52" rx="14" fill="#19263e"/>
+  <text x="190" y="127" fill="#fff" font-family="Arial,sans-serif" font-size="14" font-weight="700">TOOLS</text>
+  <text x="286" y="127" fill="#18d8f2" font-family="Arial,sans-serif" font-size="16">›</text>
+  <text x="190" y="144" fill="#aab6cc" font-family="Arial,sans-serif" font-size="7">SEQUENCES</text>
+
+  <rect x="8" y="161" width="304" height="70" rx="15" fill="#19263e"/>
+  <rect x="18" y="226" width="284" height="3" rx="2" fill="#18d8f2"/>
+  <text x="21" y="202" fill="#fff" font-family="Arial,sans-serif" font-size="24" font-weight="700">AF</text>
+  <text x="82" y="196" fill="#18d8f2" font-family="Arial,sans-serif" font-size="14" font-weight="700">READY</text>
+  <text x="82" y="215" fill="#aab6cc" font-family="Arial,sans-serif" font-size="8">PRESS + HOLD TO FOCUS</text>
+  <circle cx="276" cy="194" r="20" fill="none" stroke="#18d8f2"/>
+  <path d="M262 194h28M276 180v28" stroke="#18d8f2"/>
+</svg>
