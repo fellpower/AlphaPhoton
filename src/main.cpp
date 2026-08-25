@@ -636,6 +636,72 @@ void handleSerial() {
   }
 }
 
+void drawPhotonMark(int cx, int cy, int radius) {
+  const uint16_t background = screen.color565(2, 13, 35);
+  const uint16_t photonBlue = screen.color565(0, 184, 240);
+  const uint16_t shutterOrange = screen.color565(255, 91, 65);
+
+  screen.fillCircle(cx, cy, radius, TFT_WHITE);
+  screen.fillTriangle(cx - radius, cy - radius / 3, cx - radius / 5, cy - radius / 4,
+                      cx - radius / 2, cy + radius / 2, background);
+  screen.fillTriangle(cx - radius / 2, cy - radius, cx, cy - radius / 5,
+                      cx + radius / 2, cy - radius, background);
+  screen.fillTriangle(cx + radius / 3, cy - radius, cx + radius / 5, cy - radius / 5,
+                      cx + radius, cy - radius / 4, background);
+  screen.fillTriangle(cx + radius, cy + radius / 3, cx + radius / 4, cy + radius / 5,
+                      cx + radius / 2, cy + radius, background);
+  screen.fillTriangle(cx + radius / 3, cy + radius, cx, cy + radius / 5,
+                      cx - radius / 2, cy + radius, background);
+  screen.fillTriangle(cx - radius / 3, cy + radius, cx - radius / 5, cy + radius / 5,
+                      cx - radius, cy + radius / 3, background);
+  screen.fillCircle(cx, cy, radius / 3, shutterOrange);
+
+  for (int i = 0; i < 3; ++i) {
+    const int offset = radius + 9 + i * 8;
+    screen.drawLine(cx - offset, cy - radius / 2, cx - offset - 7, cy, photonBlue);
+    screen.drawLine(cx - offset - 7, cy, cx - offset, cy + radius / 2, photonBlue);
+  }
+  screen.fillRect(cx - 2, cy - radius - 13, 5, 8, shutterOrange);
+  screen.fillRect(cx + radius / 2, cy - radius - 7, 5, 8, photonBlue);
+  screen.fillRect(cx + radius + 5, cy - radius / 3, 7, 5, photonBlue);
+  screen.fillRect(cx + radius + 7, cy + radius / 4, 7, 5, photonBlue);
+}
+
+void showBootScreen() {
+  const uint16_t background = screen.color565(2, 13, 35);
+  const uint16_t photonBlue = screen.color565(0, 184, 240);
+  screen.fillSprite(background);
+#ifdef ALPHA_PHOTON_CORES3
+  drawPhotonMark(62, 116, 35);
+  screen.setTextSize(3);
+  screen.setTextColor(TFT_WHITE, background);
+  screen.setCursor(108, 91);
+  screen.print("Alpha");
+  screen.setTextColor(photonBlue, background);
+  screen.setCursor(198, 91);
+  screen.print("Photon");
+  screen.setTextSize(1);
+  screen.setTextColor(TFT_LIGHTGREY, background);
+  screen.setCursor(108, 130);
+  screen.print("CAMERA REMOTE");
+#else
+  drawPhotonMark(67, 65, 30);
+  screen.setTextSize(3);
+  screen.setTextColor(TFT_WHITE, background);
+  screen.setCursor(22, 112);
+  screen.print("Alpha");
+  screen.setTextColor(photonBlue, background);
+  screen.setCursor(13, 146);
+  screen.print("Photon");
+  screen.setTextSize(1);
+  screen.setTextColor(TFT_LIGHTGREY, background);
+  screen.setCursor(28, 190);
+  screen.print("CAMERA REMOTE");
+#endif
+  screen.pushSprite(0, 0);
+  delay(2000);
+}
+
 #ifdef ALPHA_PHOTON_CORES3
 enum class TouchAction : uint8_t { None, Video, Photo, Focus, Tools, Back, Change, Next, Tool0, Tool1, Tool2, Stop };
 TouchAction touchAction = TouchAction::None;
@@ -780,6 +846,7 @@ void setup() {
   screen.setTextWrap(false);
   setDisplayBrightness(80);
 #endif
+  showBootScreen();
   lastActivityAt = millis();
   Serial.println("\nAlpha Photon firmware");
   printHelp();

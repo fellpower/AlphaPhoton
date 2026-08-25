@@ -18,6 +18,7 @@ Alpha Photon turns an M5StickC Plus 1.1 into a compact Bluetooth camera remote w
 - encrypted BLE pairing and automatic reconnection
 - autofocus, photo and video start/stop
 - flicker-free graphical display with REC timer, focus and battery status
+- two-second Alpha Photon boot screen on both controllers
 - session photo/clip counters and automatic display dimming
 - unlimited interval shooting
 - timelapse with configurable interval and image count
@@ -238,6 +239,7 @@ Alpha Photon verwandelt einen M5StickC Plus 1.1 in eine kompakte Bluetooth-Kamer
 - verschlüsselte BLE-Kopplung und automatische Wiederverbindung
 - Autofokus, Foto und Video Start/Stopp
 - flackerfreie grafische Anzeige mit REC-Timer, Fokus- und Akkustatus
+- zwei Sekunden langer Alpha-Photon-Bootscreen auf beiden Controllern
 - Foto-/Clip-Zähler und automatische Display-Abdunklung
 - unbegrenzter Intervallmodus
 - Zeitraffer mit Intervall und Bildanzahl
