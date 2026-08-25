@@ -44,7 +44,7 @@ Tested: Sony α6400 / ILCE-6400 with firmware 2.00 or newer. Other models may us
 | **M5StickC Plus 1.1** | **Primary and hardware-tested** | Small, pocketable remote with physical controls | Small 1.14-inch display and 120 mAh battery |
 | [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Supported and hardware-tested** | Larger 2-inch 320 × 240 touch display and 500 mAh battery | Larger enclosure and touch controls instead of dedicated A/B buttons |
 
-The M5StickC Plus 1.1 remains the recommended first choice: it is compact and its physical buttons work without looking at the screen. CoreS3 is the larger alternative with a modern touch interface, longer runtime and motion-activated display wake. Both targets have been tested with the α6400; the current downloadable `v0.1.0` release image is still for the M5StickC Plus 1.1 only.
+The M5StickC Plus 1.1 remains the recommended first choice: it is compact and its physical buttons work without looking at the screen. CoreS3 is the larger alternative with a modern touch interface, longer runtime and motion-activated display wake. Both targets have been tested with the α6400 and have their own ready-to-flash image in release `v0.2.0`.
 
 <p align="center"><img src="assets/cores3-ui.svg" alt="Alpha Photon main touch interface on M5Stack CoreS3" width="640"></p>
 
@@ -102,14 +102,18 @@ Avoid `Reset Network Settings` during a normal controller change. Sony recommend
 
 ## Install a release (no source build)
 
-Download these two files from the [latest release](https://github.com/fellpower/AlphaPhoton/releases/latest):
+Download the image for **your** controller and its matching checksum from the [latest release](https://github.com/fellpower/AlphaPhoton/releases/latest):
 
-- `alpha-photon-m5stickc-plus-1.1-v0.1.0.bin` — complete merged flash image
+- `alpha-photon-m5stickc-plus-1.1-v0.2.0.bin` — M5StickC Plus 1.1
+- `alpha-photon-m5stack-cores3-v0.2.0.bin` — M5Stack CoreS3
 - matching `.sha256` file — optional integrity check
 
-### 1. Install the USB driver
+> [!WARNING]
+> The images are device-specific. Do not flash the CoreS3 image to a Stick or the Stick image to a CoreS3.
 
-The M5StickC Plus 1.1 uses an FTDI USB serial interface. Install the driver linked in the [official M5Stack documentation](https://docs.m5stack.com/en/core/m5stickc_plus), then reconnect the stick. On Windows it should appear as `USB Serial Port (COMx)`.
+### 1. Install the USB driver if required
+
+The M5StickC Plus 1.1 uses an FTDI USB serial interface. Install the driver linked in the [official M5Stack documentation](https://docs.m5stack.com/en/core/m5stickc_plus), then reconnect the stick. On Windows it should appear as `USB Serial Port (COMx)`. CoreS3 uses the ESP32-S3 native USB interface and normally needs no separate driver on current operating systems.
 
 ### 2. Install esptool
 
@@ -129,23 +133,41 @@ Close PlatformIO, serial monitors, M5Burner or other programs using that port.
 
 ### 4. Flash the merged image
 
+#### M5StickC Plus 1.1
+
 Windows example:
 
 ```powershell
-python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.1.0.bin
+python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
 ```
 
 macOS/Linux example:
 
 ```bash
-python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.1.0.bin
+python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
 ```
 
-The release file is a complete 4 MB-layout image and must be written at offset `0x0`.
+#### M5Stack CoreS3
+
+Windows example:
+
+```powershell
+python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.0.bin
+```
+
+macOS/Linux example (replace the port if necessary):
+
+```bash
+python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.0.bin
+```
+
+Both release files are complete bootable images and must be written at offset `0x0`.
 
 ### Boot/download mode
 
-Normally **no BOOT button is required**. The built-in FTDI interface automatically resets the ESP32 into download mode. The large front button is an application button, not a BOOT button.
+On the Stick, normally **no BOOT button is required**. The built-in FTDI interface automatically resets the ESP32 into download mode. The large front button is an application button, not a BOOT button.
+
+On CoreS3, automatic download mode normally works as well. If it does not, hold the bottom `RST` button for about three seconds until the green LED lights, release it, and use the newly appearing serial port.
 
 If esptool remains at `Connecting...`:
 
@@ -242,7 +264,7 @@ Getestet: Sony α6400 / ILCE-6400 mit Firmware 2.00 oder neuer. Weitere Modelle 
 | **M5StickC Plus 1.1** | **Primäres und hardwaregetestetes Ziel** | Kleine, handliche Fernbedienung mit echten Tasten | Kleines 1,14-Zoll-Display und 120-mAh-Akku |
 | [M5Stack CoreS3](https://docs.m5stack.com/en/core/CoreS3) | **Unterstützt und hardwaregetestet** | Größeres 2-Zoll-Touchdisplay mit 320 × 240 Pixeln und 500-mAh-Akku | Größeres Gehäuse und Touchbedienung statt eigener A-/B-Tasten |
 
-Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt und seine echten Tasten lassen sich ohne Blick auf das Display bedienen. Der CoreS3 ist die größere Alternative mit moderner Touchoberfläche, längerer Laufzeit und bewegungsaktivierter Displayaufhellung. Beide Ziele wurden mit der α6400 getestet; das aktuell herunterladbare `v0.1.0`-Release-Image ist weiterhin nur für den M5StickC Plus 1.1 bestimmt.
+Der M5StickC Plus 1.1 bleibt die empfohlene erste Wahl: Er ist kompakt und seine echten Tasten lassen sich ohne Blick auf das Display bedienen. Der CoreS3 ist die größere Alternative mit moderner Touchoberfläche, längerer Laufzeit und bewegungsaktivierter Displayaufhellung. Beide Ziele wurden mit der α6400 getestet und besitzen im Release `v0.2.0` jeweils ein eigenes, direkt flashbares Image.
 
 <p align="center"><img src="assets/cores3-ui.svg" alt="Alpha-Photon-Touchoberfläche auf dem M5Stack CoreS3" width="640"></p>
 
@@ -298,14 +320,18 @@ Die Dokumentation der α6400 sagt nicht eindeutig, ob mehrere Fernbedienungsbind
 
 ## Release installieren (ohne Quellcode-Build)
 
-Von der [neuesten Release-Seite](https://github.com/fellpower/AlphaPhoton/releases/latest) herunterladen:
+Das Image für den **eigenen** Controller und die zugehörige Prüfsumme von der [neuesten Release-Seite](https://github.com/fellpower/AlphaPhoton/releases/latest) herunterladen:
 
-- `alpha-photon-m5stickc-plus-1.1-v0.1.0.bin` — vollständiges, zusammengeführtes Flash-Image
+- `alpha-photon-m5stickc-plus-1.1-v0.2.0.bin` — M5StickC Plus 1.1
+- `alpha-photon-m5stack-cores3-v0.2.0.bin` — M5Stack CoreS3
 - passende `.sha256`-Datei — optionale Integritätsprüfung
 
-### 1. USB-Treiber installieren
+> [!WARNING]
+> Die Images sind gerätespezifisch. Das CoreS3-Image nicht auf den Stick und das Stick-Image nicht auf den CoreS3 flashen.
 
-Der M5StickC Plus 1.1 verwendet eine FTDI-USB-Seriell-Schnittstelle. Den Treiber aus der [offiziellen M5Stack-Dokumentation](https://docs.m5stack.com/en/core/m5stickc_plus) installieren und den Stick neu verbinden. Unter Windows erscheint er als `USB Serial Port (COMx)`.
+### 1. USB-Treiber installieren, falls erforderlich
+
+Der M5StickC Plus 1.1 verwendet eine FTDI-USB-Seriell-Schnittstelle. Den Treiber aus der [offiziellen M5Stack-Dokumentation](https://docs.m5stack.com/en/core/m5stickc_plus) installieren und den Stick neu verbinden. Unter Windows erscheint er als `USB Serial Port (COMx)`. Der CoreS3 verwendet die native USB-Schnittstelle des ESP32-S3 und benötigt auf aktuellen Betriebssystemen normalerweise keinen separaten Treiber.
 
 ### 2. esptool installieren
 
@@ -325,23 +351,41 @@ PlatformIO, serielle Monitore, M5Burner und andere Programme schließen, die den
 
 ### 4. Komplett-Image flashen
 
+#### M5StickC Plus 1.1
+
 Windows:
 
 ```powershell
-python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.1.0.bin
+python -m esptool --chip esp32 --port COM4 --baud 460800 write_flash 0x0 .\alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
 ```
 
 macOS/Linux:
 
 ```bash
-python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.1.0.bin
+python3 -m esptool --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash 0x0 ./alpha-photon-m5stickc-plus-1.1-v0.2.0.bin
 ```
 
-Die Release-Datei enthält das vollständige 4-MB-Flashlayout und muss an Offset `0x0` geschrieben werden.
+#### M5Stack CoreS3
+
+Windows:
+
+```powershell
+python -m esptool --chip esp32s3 --port COM13 --baud 1500000 write_flash 0x0 .\alpha-photon-m5stack-cores3-v0.2.0.bin
+```
+
+macOS/Linux (Port bei Bedarf ersetzen):
+
+```bash
+python3 -m esptool --chip esp32s3 --port /dev/ttyACM0 --baud 1500000 write_flash 0x0 ./alpha-photon-m5stack-cores3-v0.2.0.bin
+```
+
+Beide Release-Dateien sind vollständige, bootfähige Images und müssen an Offset `0x0` geschrieben werden.
 
 ### Boot-/Download-Modus
 
-Normalerweise ist **kein BOOT-Taster erforderlich**. Die eingebaute FTDI-Schnittstelle setzt den ESP32 beim Flashen automatisch in den Download-Modus. Die große Fronttaste ist eine Anwendungstaste und keine BOOT-Taste.
+Beim Stick ist normalerweise **kein BOOT-Taster erforderlich**. Die eingebaute FTDI-Schnittstelle setzt den ESP32 beim Flashen automatisch in den Download-Modus. Die große Fronttaste ist eine Anwendungstaste und keine BOOT-Taste.
+
+Auch der CoreS3 wechselt normalerweise automatisch in den Downloadmodus. Falls das nicht funktioniert, die untere `RST`-Taste ungefähr drei Sekunden halten, bis die grüne LED leuchtet. Dann loslassen und den neu erschienenen seriellen Port verwenden.
 
 Falls esptool bei `Connecting...` stehen bleibt:
 
