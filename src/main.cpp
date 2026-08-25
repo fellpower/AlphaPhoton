@@ -821,6 +821,35 @@ void handleCoreTouch() {
   touchAction = TouchAction::None;
   displayDirty = true;
 }
+#else
+void wakeDisplayOnMotion() {
+  static bool initialized = false;
+  static uint32_t lastSampleAt = 0;
+  static float previousX = 0.0f;
+  static float previousY = 0.0f;
+  static float previousZ = 0.0f;
+
+  const uint32_t now = millis();
+  if (now - lastSampleAt < 50) return;
+  lastSampleAt = now;
+
+  float x = 0.0f;
+  float y = 0.0f;
+  float z = 0.0f;
+  M5.Imu.getAccelData(&x, &y, &z);
+  if (initialized && displayDimmed) {
+    const float accelerationDelta = fabsf(x - previousX) + fabsf(y - previousY) +
+                                    fabsf(z - previousZ);
+    if (accelerationDelta > 0.12f) {
+      Serial.printf("[UI] motion wake accel=%.2f\n", accelerationDelta);
+      markActivity();
+    }
+  }
+  previousX = x;
+  previousY = y;
+  previousZ = z;
+  initialized = true;
+}
 #endif
 
 void setup() {
@@ -839,6 +868,7 @@ void setup() {
   setDisplayBrightness(100);
 #else
   M5.begin(true, true, true);
+  M5.Imu.Init();
   M5.Lcd.setRotation(2);
   M5.Lcd.setTextWrap(false);
   screen.setColorDepth(16);
@@ -856,9 +886,7 @@ void setup() {
 
 void loop() {
   M5.update();
-#ifdef ALPHA_PHOTON_CORES3
   wakeDisplayOnMotion();
-#endif
   remote.loop();
   handleSerial();
   runSequence();
